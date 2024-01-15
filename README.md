@@ -27,13 +27,10 @@ python环境切换
 > D:\devtools\PythonVenv\llama2\Scripts\activate.bat
 ```
 
+vscode切换
+使用CTRL+shift+p命令: 打开命令交互面板， 在命令面板中可以输入命令进行搜索, 输入 D:\devtools\PythonVenv\llama2
 ```bash
-> torchrun --nproc_per_node 1 example_chat_completion.py \
-    --ckpt_dir E:\THUDM\llama2\model\llama-2-7b-chat \
-    --tokenizer_path E:\THUDM\llama2\model\tokenizer.model \
-    --max_seq_len 512 --max_batch_size 6
->
-> torchrun --nproc_per_node 1 example_chat_completion.py --ckpt_dir E:\THUDM\llama2\model\llama-2-7b-chat --tokenizer_path E:\THUDM\llama2\model\tokenizer.model --max_seq_len 512 --max_batch_size 6
+> Python: Select Interpreter
 ```
 
 ```bash
