@@ -42,6 +42,11 @@ vscode切换
 > torchrun --nproc_per_node 1 example_text_completion.py --ckpt_dir E:\THUDM\llama2\model\llama-2-7b-chat --tokenizer_path E:\THUDM\llama2\model\tokenizer.model --max_seq_len 128 --max_batch_size 4
 ```
 
+```bash
+>
+> python example_text_completion02.py --ckpt_dir E:\THUDM\llama2\model\llama-2-7b-chat --tokenizer_path E:\THUDM\llama2\model\tokenizer.model --max_seq_len 128 --max_batch_size 4
+>
+```
 
 ## Debian环境部署
 
