@@ -1,7 +1,6 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
 
-import fire
 import torch.distributed as dist
 import os
 
@@ -9,8 +8,10 @@ from llama import Llama
 from typing import List
 
 def main(
-    ckpt_dir: str = "E:/THUDM/llama2/model/llama-2-7b-chat",
-    tokenizer_path: str = "E:/THUDM/llama2/model/tokenizer.model",
+    # ckpt_dir: str = "E:/THUDM/llama2/model/llama-2-7b-chat",
+    # tokenizer_path: str = "E:/THUDM/llama2/model/tokenizer.model",
+    ckpt_dir: str = "/opt/Data/THUDM/llama2/llama-2-7b-chat",
+    tokenizer_path: str = "/opt/Data/THUDM/llama2/tokenizer.model",
     temperature: float = 0.6,
     top_p: float = 0.9,
     max_seq_len: int = 128,

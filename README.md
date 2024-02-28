@@ -18,6 +18,7 @@
 
 ```bash
 > pip install -r requirements.txt
+> pip install jupyter notebook -i https://pypi.tuna.tsinghua.edu.cn/simple
 > pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
@@ -79,14 +80,16 @@ vscode切换
 部署推理环境
 
 ```bash
-> pip install -r requirements.txt
+> pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 > pip install gradio
 > pip install pyreadline3
 > pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-> pip install -i https://pypi.tuna.tsinghua.edu.cn/simple transformers==4.33.2
+> pip install transformers==4.33.2 -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
+
+启动丘比特
 ```bash
-> export http_proxy=192.168.2.199:58591
-> export http_proxy=192.168.2.199:58591
+> jupyter notebook
+> jupyter notebook --no-browser --port 7000 --ip=192.168.2.200
 ```
