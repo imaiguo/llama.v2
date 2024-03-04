@@ -84,9 +84,24 @@ vscode切换
 > pip install gradio
 > pip install pyreadline3
 > pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-> pip install transformers==4.33.2 -i https://pypi.tuna.tsinghua.edu.cn/simple
+> pip install transformers==4.33.2 protobuf accelerate-i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
+## 模型参数格式转换
+
+bfb16转fb16 [pytorch训练格式 -> hugging face格式]
+
+```bash
+> python llama-recipes/src/llama_recipes/tools/convert_llama_weights_to_hf.py \
+    --input_dir /opt/Data/THUDM/llama2 --model_size 7B --output_dir /opt/Data/THUDM/llama2.hf/llama-2-7b-chat-hf
+>
+```
+
+启动服务
+```bash
+>
+> python openai/openapi.py
+```
 
 启动丘比特
 ```bash
