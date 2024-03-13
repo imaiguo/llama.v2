@@ -1,13 +1,13 @@
 # Modified from https://github.com/THUDM/ChatGLM-6B/blob/main/api.py
 
 from fastapi import FastAPI, Request
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import uvicorn, json, datetime
 import torch
 import platform
 
 if platform.system() == "Windows":
-    MODEL_PATH = "E:/THUDM/llama2.hf/llama-2-7b-chat"
+    MODEL_PATH = "E:/THUDM/llama2.hf/llama-2-7b-chat-hf"
 else:
     MODEL_PATH = "/opt/Data/THUDM/llama2.hf/llama-2-7b-chat-hf"
 
@@ -46,12 +46,14 @@ async def create_item(request: Request):
     input_ids = []
     for q, a in history:
         input_ids += tokenizer.encode(f"{B_INST} {q} {E_INST} {a}") + [tokenizer.eos_token_id]
+
     input_ids += tokenizer.encode(f"{B_INST} {prompt} {E_INST}")
 
     response = model.generate(torch.tensor([input_ids]).cuda(),
                                    max_length=max_length if max_length else 4096,
                                    top_p=top_p if top_p else 0.7,
                                    temperature=temperature if temperature else 0.95)
+
     response = tokenizer.decode(response[0, len(input_ids):], skip_special_tokens=True)
     history.append([prompt, response])
 
@@ -72,11 +74,13 @@ if __name__ == '__main__':
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=False)
     model = AutoModelForCausalLM.from_pretrained(
             MODEL_PATH,
-            # load_in_4bit=MODEL_PATH.endswith("4bit"),
+            local_files_only=True,
             torch_dtype=torch.float16,
             device_map='cuda'
         )
 
     model.eval()
-
-    uvicorn.run(app, host='192.168.2.200', port=8000, workers=1)
+    if platform.system() == 'Windows':
+        uvicorn.run(app, host='192.168.2.198', port=9001, workers=1)
+    else:
+        uvicorn.run(app, host='192.168.2.200', port=9000, workers=1)
