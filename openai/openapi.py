@@ -1,7 +1,6 @@
-# Modified from https://github.com/THUDM/ChatGLM-6B/blob/main/api.py
 
 from fastapi import FastAPI, Request
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM
 import uvicorn, json, datetime
 import torch
 import platform
@@ -18,11 +17,14 @@ def torch_gc():
 
 
 app = FastAPI()
+
 B_INST, E_INST = "[INST]", "[/INST]"
-SYSTEM = """<<SYS>>\nYou are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
 
-            If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.\n<</SYS>>\n\n"""
-
+SYSTEM = """<<SYS>>\nYou are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.
+Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content.
+Please ensure that your responses are socially unbiased and positive in nature.
+If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct.
+If you don't know the answer to a question, please don't share false information.\n<</SYS>>\n\n"""
 
 @app.post("/chat/completions")
 async def create_item(request: Request):
@@ -65,9 +67,11 @@ async def create_item(request: Request):
         "status": 200,
         "time": time
     }
+
     log = "[" + time + "] " + '", prompt:"' + prompt + '", response:"' + repr(response) + '"'
     print(log)
     torch_gc()
+
     return answer
 
 if __name__ == '__main__':

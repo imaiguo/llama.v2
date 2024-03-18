@@ -83,8 +83,10 @@ vscode切换
 > pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 > pip install gradio
 > pip install pyreadline3
-> pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-> pip install transformers==4.33.2 protobuf accelerate-i https://pypi.tuna.tsinghua.edu.cn/simple
+> pip install torch==2.0.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+> pip install transformers==4.31.0 protobuf accelerate llama2-wrapper -i https://pypi.tuna.tsinghua.edu.cn/simple
+> pip install llama2-wrapper -i https://pypi.tuna.tsinghua.edu.cn/simple
+> 
 ```
 
 ## 模型参数格式转换
@@ -92,16 +94,20 @@ vscode切换
 bfb16转fb16 [pytorch训练格式 -> hugging face格式]
 
 ```bash
+> # Linux
 > python llama-recipes/src/llama_recipes/tools/convert_llama_weights_to_hf.py \
     --input_dir /opt/Data/THUDM/llama2 --model_size 7B --output_dir /opt/Data/THUDM/llama2.hf/llama-2-7b-chat-hf
 >
-> python llama-recipes/src/llama_recipes/tools/convert_llama_weights_to_hf.py --input_dir E:/THUDM/llama2 --model_size 7B --output_dir E:/THUDM/llama2.hf/llama-2-7b-chat-hf
+> # windows
+> python llama-recipes/src/llama_recipes/tools/convert_llama_weights_to_hf.py \
+    --input_dir E:/THUDM/llama2 --model_size 7B --output_dir E:/THUDM/llama2.hf/llama-2-7b-chat-hf
 >
 ```
 
 启动服务
 ```bash
 > python openai/openapi.py
+> python WebGradio/WebGradioAutoModel.py 
 > jupyter notebook --no-browser --port 7001 --ip=192.168.2.198
 > jupyter notebook --no-browser --port 7000 --ip=192.168.2.200
 ```
