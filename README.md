@@ -98,6 +98,8 @@ bfb16转fb16 [pytorch训练格式 -> hugging face格式]
 > python llama-recipes/src/llama_recipes/tools/convert_llama_weights_to_hf.py \
     --input_dir /opt/Data/THUDM/llama2 --model_size 7B --output_dir /opt/Data/THUDM/llama2.hf/llama-2-7b-chat-hf
 >
+> python llama-recipes/src/llama_recipes/tools/convert_llama_weights_to_hf.py --input_dir /opt/Data/THUDM/llama2 --model_size 13B --output_dir /opt/Data/THUDM/llama2.hf/llama-2-13b-chat-hf
+>
 > # windows
 > python llama-recipes/src/llama_recipes/tools/convert_llama_weights_to_hf.py \
     --input_dir E:/THUDM/llama2 --model_size 7B --output_dir E:/THUDM/llama2.hf/llama-2-7b-chat-hf
@@ -107,7 +109,9 @@ bfb16转fb16 [pytorch训练格式 -> hugging face格式]
 启动服务
 ```bash
 > python openai/openapi.py
-> python WebGradio/WebGradioAutoModel.py 
+> python WebGradio/WebGradioAutoModel.py
+> python WebGradio/WebGradioAutoModelLora.py
+> python WebGradio/WebGradioAutoModelFlagAlpha.py
 > jupyter notebook --no-browser --port 7001 --ip=192.168.2.198
 > jupyter notebook --no-browser --port 7000 --ip=192.168.2.200
 ```

@@ -13,7 +13,7 @@ if platform.system() == 'Windows':
 if platform.system() == "Windows":
     MODEL_PATH = "E:/THUDM/llama2/model/llama-2-7b-chat"
 else:
-    MODEL_PATH = "/opt/Data/THUDM/llama2.hf/llama-2-7b-chat-hf"
+    MODEL_PATH = "/opt/Data/THUDM/FlagAlpha/Atom-7B-Chat"
 
 model = LLAMA2_WRAPPER(
 	model_path = MODEL_PATH,
@@ -95,7 +95,7 @@ with gr.Blocks(title = "Llama2", css="footer {visibility: hidden}") as demo:
         with gr.Column(min_width=1, scale=1):
             submitBtn = gr.Button("提交", variant="primary")
 
-    begin = [{"role":"system", "content":"You are Intelligent Customer Service Blue, carefully analyzing the user's input and providing detailed and accurate answers."}]
+    begin = [{"role":"system", "content":"你是智能客服小蓝，仔细分析用户的输入并作详细又准确的回答。"}]
     history = gr.State(value=begin)
 
     subMsg = submitBtn.click(fn=add_text, inputs=[chatbot, user_input], outputs=[chatbot, user_input], queue=False).then(fn=predict, inputs=[chatbot, history], outputs=[chatbot, history], show_progress=True, concurrency_limit=1)
