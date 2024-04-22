@@ -10,48 +10,31 @@ from llama2_wrapper import LLAMA2_WRAPPER, get_prompt, get_prompt_for_dialog
 if platform.system() == 'Windows':
     os.environ['PATH'] = os.environ.get("PATH", "") + os.pathsep + r'D:\devtools\PythonVenv\llama2\Lib\site-packages\torch\lib'
 
-if platform.system() == "Windows":
-    MODEL_PATH = "E:/THUDM/llama2/model/llama-2-7b-chat"
-else:
-    MODEL_PATH = "/opt/Data/THUDM/llama2.hf/llama-2-7b-chat-hf"
+MODEL_PATH = "/opt/Data/ModelWeight/meta/llama2.hf/llama-2-7b-chat-hf"
+# MODEL_PATH = "/opt/Data/ModelWeight/meta/llama2.hf/llama-2-13b-chat-hf"
 
+# 模型加载 hf格式为fb16精度
 model = LLAMA2_WRAPPER(
 	model_path = MODEL_PATH,
     load_in_8bit = False,
     backend_type = "transformers"
 )
 
-def parse_text(text):
-    """copy from https://github.com/GaiZhenbiao/ChuanhuChatGPT/"""
-    lines = text.split("\n")
-    lines = [line for line in lines if line != ""]
-    count = 0
-    for i, line in enumerate(lines):
-        if "```" in line:
-            count += 1
-            items = line.split('`')
-            if count % 2 == 1:
-                lines[i] = f'<pre><code class="language-{items[-1]}">'
-            else:
-                lines[i] = f'<br></code></pre>'
-        else:
-            if i > 0:
-                if count % 2 == 1:
-                    line = line.replace("`", "\`")
-                    line = line.replace("<", "&lt;")
-                    line = line.replace(">", "&gt;")
-                    line = line.replace(" ", "&nbsp;")
-                    line = line.replace("*", "&ast;")
-                    line = line.replace("_", "&lowbar;")
-                    line = line.replace("-", "&#45;")
-                    line = line.replace(".", "&#46;")
-                    line = line.replace("!", "&#33;")
-                    line = line.replace("(", "&#40;")
-                    line = line.replace(")", "&#41;")
-                    line = line.replace("$", "&#36;")
-                lines[i] = "<br>" + line
-    text = "".join(lines)
-    return text
+
+def deleteByStartAndEnd(s, star):
+    if star in s:
+        x1 = s.index(star)
+        nextposition = x1 + 1
+        # print(nextposition)
+        # print(s[nextposition:len(s)])
+        if star in s[nextposition:len(s)]:
+            x2 = s.index(star, nextposition) + len(star)
+            x3 = s[x1:x2]
+            # print(x3)
+            result = s.replace(x3, "")
+            result = deleteByStartAndEnd(result, star)
+            return result
+    return s
 
 def predict(chatbot, history):
     input = chatbot[-1][0]
@@ -60,7 +43,7 @@ def predict(chatbot, history):
     prompt = get_prompt_for_dialog(history)
 
     for response in model.generate(prompt, max_new_tokens=4096, temperature=1.0):
-        chatbot[-1][1] = parse_text(response)
+        chatbot[-1][1] = deleteByStartAndEnd(response, "*")
         yield chatbot, history
 
     history += [{"role":"assistant", "content":response }]
@@ -106,7 +89,4 @@ with gr.Blocks(title = "Llama2", css="footer {visibility: hidden}") as demo:
 
 auth=[("llm","llm123456"),("zhangsan","zhangsan123")]
 
-if platform.system() == 'Windows':
-    demo.queue().launch(server_name="192.168.2.198", server_port=8001, inbrowser=False, share=False, auth=auth)
-else:
-    demo.queue().launch(server_name="192.168.2.200", server_port=8000, inbrowser=False, share=False, auth=auth)
+demo.queue().launch(server_name="192.168.2.200", server_port=8000, inbrowser=False, share=False, auth=auth)

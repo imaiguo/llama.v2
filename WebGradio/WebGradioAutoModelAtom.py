@@ -5,67 +5,64 @@ import gradio as gr
 
 from loguru import logger
 
-from llama2_wrapper import LLAMA2_WRAPPER, get_prompt, get_prompt_for_dialog
-
 if platform.system() == 'Windows':
     os.environ['PATH'] = os.environ.get("PATH", "") + os.pathsep + r'D:\devtools\PythonVenv\llama2\Lib\site-packages\torch\lib'
 
-if platform.system() == "Windows":
-    MODEL_PATH = "E:/THUDM/llama2/model/llama-2-7b-chat"
-else:
-    MODEL_PATH = "/opt/Data/THUDM/FlagAlpha/Atom-7B-Chat"
+MODEL_PATH = "/opt/Data/ModelWeight/FlagAlpha/Atom-7B-Chat"
 
-model = LLAMA2_WRAPPER(
-	model_path = MODEL_PATH,
-    load_in_8bit = False,
-    backend_type = "transformers"
-)
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
-def parse_text(text):
-    """copy from https://github.com/GaiZhenbiao/ChuanhuChatGPT/"""
-    lines = text.split("\n")
-    lines = [line for line in lines if line != ""]
-    count = 0
-    for i, line in enumerate(lines):
-        if "```" in line:
-            count += 1
-            items = line.split('`')
-            if count % 2 == 1:
-                lines[i] = f'<pre><code class="language-{items[-1]}">'
-            else:
-                lines[i] = f'<br></code></pre>'
-        else:
-            if i > 0:
-                if count % 2 == 1:
-                    line = line.replace("`", "\`")
-                    line = line.replace("<", "&lt;")
-                    line = line.replace(">", "&gt;")
-                    line = line.replace(" ", "&nbsp;")
-                    line = line.replace("*", "&ast;")
-                    line = line.replace("_", "&lowbar;")
-                    line = line.replace("-", "&#45;")
-                    line = line.replace(".", "&#46;")
-                    line = line.replace("!", "&#33;")
-                    line = line.replace("(", "&#40;")
-                    line = line.replace(")", "&#41;")
-                    line = line.replace("$", "&#36;")
-                lines[i] = "<br>" + line
-    text = "".join(lines)
+model = AutoModelForCausalLM.from_pretrained(MODEL_PATH,
+                                             device_map="cuda:0",
+                                             torch_dtype=torch.float16,
+                                             load_in_8bit=False) # use_flash_attention_2=True trust_remote_code=True
+model =model.eval()
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=True)
+tokenizer.pad_token = tokenizer.eos_token
+
+def tripStr(text):
+    assist = "Assistant: "
+    if assist in text:
+        pos = text.index(assist) + len(assist)
+        data = text[pos:len(text)]
+        data=data.replace("</s>","")
+        return data
+
     return text
 
 def predict(chatbot, history):
     input = chatbot[-1][0]
     logger.debug(f"input->:{input}")
+    prompt = f'<s>Human: {input}\n</s><s>Assistant: '
+    
     history += [{"role":"user", "content":input}]
-    prompt = get_prompt_for_dialog(history)
 
-    for response in model.generate(prompt, max_new_tokens=4096, temperature=1.0):
-        chatbot[-1][1] = parse_text(response)
-        yield chatbot, history
+    input_ids = tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
 
+    generate_input = {
+        "input_ids":input_ids.input_ids.to('cuda'),
+        "max_new_tokens":4096,
+        "top_k":50,
+        "top_p":0.95,
+        "temperature":1.0,
+        # "repetition_penalty":1.3,
+        "eos_token_id":tokenizer.eos_token_id,
+        "bos_token_id":tokenizer.bos_token_id,
+        "pad_token_id":tokenizer.pad_token_id
+    }
+
+    generate_ids  = model.generate(**generate_input)
+    response = tokenizer.decode(generate_ids[0])
+    response = tripStr(response)
+    logger.debug(response)
     history += [{"role":"assistant", "content":response }]
-
+    
+    chatbot[-1][1] = response
     logger.debug(f"history->:{history}")
+
+    return chatbot, history
 
 def reset_user_input():
     return gr.update(value='')
@@ -106,7 +103,4 @@ with gr.Blocks(title = "Llama2", css="footer {visibility: hidden}") as demo:
 
 auth=[("llm","llm123456"),("zhangsan","zhangsan123")]
 
-if platform.system() == 'Windows':
-    demo.queue().launch(server_name="192.168.2.198", server_port=8001, inbrowser=False, share=False, auth=auth)
-else:
-    demo.queue().launch(server_name="192.168.2.200", server_port=8000, inbrowser=False, share=False, auth=auth)
+demo.queue().launch(server_name="192.168.2.200", server_port=8000, inbrowser=False, share=False, auth=auth)

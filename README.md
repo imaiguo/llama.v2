@@ -111,7 +111,7 @@ bfb16转fb16 [pytorch训练格式 -> hugging face格式]
 > python openai/openapi.py
 > python WebGradio/WebGradioAutoModel.py
 > python WebGradio/WebGradioAutoModelLora.py
-> python WebGradio/WebGradioAutoModelFlagAlpha.py
+> python WebGradio/WebGradioAutoModelAtom.py
 > jupyter notebook --no-browser --port 7001 --ip=192.168.2.198
 > jupyter notebook --no-browser --port 7000 --ip=192.168.2.200
 ```
