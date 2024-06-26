@@ -1,4 +1,7 @@
-
+#
+## 支持历史记录的 llama2 官方权重做hf转换的能力演示
+#
+# *adjusts glasses* *smiles*
 import os
 import platform
 import gradio as gr

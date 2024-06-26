@@ -1,6 +1,11 @@
 
 # LLAMA2
 
+
+Llama1 Content Length: 2K
+Llama2 Content Length: 4K
+Llama3 Content Length: 8K
+
 ## Windows环境部署
 
  准备独立的python环境

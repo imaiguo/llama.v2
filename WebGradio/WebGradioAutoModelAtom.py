@@ -1,4 +1,6 @@
-
+#
+## 不支持历史记录的 llama2 中文全量微调Atom能力演示
+#
 import os
 import platform
 import gradio as gr

@@ -1,4 +1,7 @@
-
+#
+## 支持历史记录的 llama2 Lora中文微调Chinese合并模型能力演示
+#
+#
 import os
 import platform
 import gradio as gr
@@ -11,6 +14,7 @@ if platform.system() == 'Windows':
     os.environ['PATH'] = os.environ.get("PATH", "") + os.pathsep + r'D:\devtools\PythonVenv\llama2\Lib\site-packages\torch\lib'
 
 MODEL_PATH = "/opt/Data/ModelWeight/FlagAlpha/Llama2-Chinese-7b-Chat"
+# MODEL_PATH = "/opt/Data/ModelWeight/FlagAlpha/Llama2-Chinese-13b-Chat"
 
 # 模型加载 hf格式为fb16精度
 model = LLAMA2_WRAPPER(
@@ -18,7 +22,6 @@ model = LLAMA2_WRAPPER(
     load_in_8bit = False,
     backend_type = "transformers"
 )
-
 
 def deleteByStartAndEnd(s, star):
     if star in s:
